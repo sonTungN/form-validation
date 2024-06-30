@@ -56,6 +56,8 @@ function Validator(options) {
             return updatingValue;
           }, {});
           options.onSubmit(validFormValues);
+        } else {
+          formElement.submit();
         }
       }
     };
