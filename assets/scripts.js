@@ -58,3 +58,14 @@ Validator.isEmail = function (selector) {
     },
   };
 };
+
+Validator.minLength = function (selector, min) {
+  return {
+    selector: selector,
+    test: function (value) {
+      return value.length >= min
+        ? undefined
+        : `Please use at least ${min} characters!`;
+    },
+  };
+};
