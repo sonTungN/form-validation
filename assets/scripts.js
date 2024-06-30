@@ -18,6 +18,9 @@ function Validator(options) {
       errorElement.innerText = "";
       inputElement.parentElement.classList.remove("invalid");
     }
+
+    // Valid --> return undefined --> !errorMessage = true
+    return !errorMessage;
   }
 
   let formElement = document.querySelector(options.form);
@@ -26,13 +29,35 @@ function Validator(options) {
     // Validate all input when click submit
     formElement.onsubmit = function (e) {
       e.preventDefault();
+
+      let isFormValid = true;
+
       options.rules.forEach(function (rule) {
         let inputElement = formElement.querySelector(rule.selector);
         let errorElement = inputElement.parentElement.querySelector(
           options.errorSelector,
         );
-        validate(inputElement, rule, errorElement);
+        let isValid = validate(inputElement, rule, errorElement);
+        if (!isValid) {
+          isFormValid = false;
+        }
       });
+
+      if (isFormValid) {
+        if (typeof options.onSubmit === "function") {
+          let validPromptInput = formElement.querySelectorAll(
+            "[name]:not([disabled])",
+          );
+          let validFormValues = Array.from(validPromptInput).reduce(function (
+            updatingValue,
+            currentInput,
+          ) {
+            updatingValue[currentInput.name] = currentInput.value;
+            return updatingValue;
+          }, {});
+          options.onSubmit(validFormValues);
+        }
+      }
     };
 
     // Process all the rules
