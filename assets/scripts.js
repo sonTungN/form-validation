@@ -1,8 +1,6 @@
 function Validator(options) {
-  function validate(inputElement, rule) {
+  function validate(inputElement, rule, errorElement) {
     let errorMessage = rule.test(inputElement.value);
-    let errorElement =
-      inputElement.parentElement.querySelector(".form-message");
 
     if (errorMessage) {
       errorElement.innerText = errorMessage;
@@ -18,9 +16,20 @@ function Validator(options) {
   if (formElement) {
     options.rules.forEach(function (rule) {
       let inputElement = formElement.querySelector(rule.selector);
+      let errorElement = inputElement.parentElement.querySelector(
+        options.errorSelector,
+      );
+
       if (inputElement) {
+        // Process onblur input
         inputElement.onblur = function () {
-          validate(inputElement, rule);
+          validate(inputElement, rule, errorElement);
+        };
+
+        // Process when user prompts input
+        inputElement.oninput = function () {
+          errorElement.innerText = "";
+          inputElement.parentElement.classList.remove("invalid");
         };
       }
     });
@@ -44,7 +53,7 @@ Validator.isEmail = function (selector) {
   return {
     selector: selector,
     test: function (value) {
-      let pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      let pattern = /^\w+('-'?\w+)*@\w+('-'?\w+)*(\.\w{2,3})+$/;
       return pattern.test(value) ? undefined : "Please fill with an email!";
     },
   };
