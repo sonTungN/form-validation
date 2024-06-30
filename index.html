@@ -76,10 +76,7 @@
     <script>
       Validator({
         form: "#form-1",
-        rules: [
-          Validator.isRequired("#full-name"),
-          Validator.isEmail("#email"),
-        ],
+        rules: [Validator.isRequired("#fullname"), Validator.isEmail("#email")],
       });
     </script>
   </body>
