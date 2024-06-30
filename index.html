@@ -73,5 +73,14 @@
     </div>
 
     <script src="assets/scripts.js"></script>
+    <script>
+      Validator({
+        form: "#form-1",
+        rules: [
+          Validator.isRequired("#full-name"),
+          Validator.isEmail("#email"),
+        ],
+      });
+    </script>
   </body>
 </html>
