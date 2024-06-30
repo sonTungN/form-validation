@@ -69,3 +69,14 @@ Validator.minLength = function (selector, min) {
     },
   };
 };
+
+Validator.isConfirmed = function (selector, getConfirmedValue) {
+  return {
+    selector: selector,
+    test: function (value) {
+      return value === getConfirmedValue()
+        ? undefined
+        : "Value is un-identical!";
+    },
+  };
+};
