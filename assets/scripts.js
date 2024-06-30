@@ -43,6 +43,9 @@ Validator.isRequired = function (selector) {
 Validator.isEmail = function (selector) {
   return {
     selector: selector,
-    test: function () {},
+    test: function (value) {
+      let pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      return pattern.test(value) ? undefined : "Please fill with an email!";
+    },
   };
 };
