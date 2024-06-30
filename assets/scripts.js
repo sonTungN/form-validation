@@ -39,44 +39,46 @@ function Validator(options) {
 // General Rule:
 // 1. Invalid --> Display message
 // 2. Valid --> return undefined
-Validator.isRequired = function (selector) {
+Validator.isRequired = function (selector, message) {
   return {
     selector: selector,
     test: function (value) {
       let valueNoSpace = value.trim();
-      return valueNoSpace ? undefined : "Please fill in this blank!";
+      return valueNoSpace ? undefined : message || "Please fill in this blank!";
     },
   };
 };
 
-Validator.isEmail = function (selector) {
+Validator.isEmail = function (selector, message) {
   return {
     selector: selector,
     test: function (value) {
       let pattern = /^\w+('-'?\w+)*@\w+('-'?\w+)*(\.\w{2,3})+$/;
-      return pattern.test(value) ? undefined : "Please fill with an email!";
+      return pattern.test(value)
+        ? undefined
+        : message || "Please fill with an email!";
     },
   };
 };
 
-Validator.minLength = function (selector, min) {
+Validator.minLength = function (selector, min, message) {
   return {
     selector: selector,
     test: function (value) {
       return value.length >= min
         ? undefined
-        : `Please use at least ${min} characters!`;
+        : message || `Please use at least ${min} characters!`;
     },
   };
 };
 
-Validator.isConfirmed = function (selector, getConfirmedValue) {
+Validator.isConfirmed = function (selector, getConfirmedValue, message) {
   return {
     selector: selector,
     test: function (value) {
       return value === getConfirmedValue()
         ? undefined
-        : "Value is un-identical!";
+        : message || "Value is un-identical!";
     },
   };
 };

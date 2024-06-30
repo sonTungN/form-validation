@@ -78,14 +78,18 @@
         form: "#form-1",
         errorSelector: ".form-message",
         rules: [
-          Validator.isRequired("#fullname"),
+          Validator.isRequired("#fullname", "Please fill in your full name!"),
           Validator.isEmail("#email"),
           Validator.isRequired("#password"),
           Validator.minLength("#password", 6),
           Validator.isRequired("#password_confirmation"),
-          Validator.isConfirmed("#password_confirmation", function () {
-            return document.querySelector("#form-1 #password").value;
-          }),
+          Validator.isConfirmed(
+            "#password_confirmation",
+            function () {
+              return document.querySelector("#form-1 #password").value;
+            },
+            "Confirmed Password is incorrect!",
+          ),
         ],
       });
     </script>
