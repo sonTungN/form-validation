@@ -23,6 +23,19 @@ function Validator(options) {
   let formElement = document.querySelector(options.form);
 
   if (formElement) {
+    // Validate all input when click submit
+    formElement.onsubmit = function (e) {
+      e.preventDefault();
+      options.rules.forEach(function (rule) {
+        let inputElement = formElement.querySelector(rule.selector);
+        let errorElement = inputElement.parentElement.querySelector(
+          options.errorSelector,
+        );
+        validate(inputElement, rule, errorElement);
+      });
+    };
+
+    // Process all the rules
     options.rules.forEach(function (rule) {
       if (!Array.isArray(selectorRules[rule.selector])) {
         selectorRules[rule.selector] = [rule.test];
