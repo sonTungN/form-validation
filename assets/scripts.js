@@ -1,4 +1,13 @@
 function Validator(options) {
+  function getParent(element, selector) {
+    while (element.parentElement) {
+      if (element.parentElement.matches(selector)) {
+        return element.parentElement;
+      }
+      element = element.parentElement;
+    }
+  }
+
   // Create objects to store the selector rules based on rule.selector as 'KEY'
   let selectorRules = {};
 
@@ -13,10 +22,14 @@ function Validator(options) {
 
     if (errorMessage) {
       errorElement.innerText = errorMessage;
-      inputElement.parentElement.classList.add("invalid");
+      getParent(inputElement, options.formGroupSelectors).classList.add(
+        "invalid",
+      );
     } else {
       errorElement.innerText = "";
-      inputElement.parentElement.classList.remove("invalid");
+      getParent(inputElement, options.formGroupSelectors).classList.remove(
+        "invalid",
+      );
     }
 
     // Valid --> return undefined --> !errorMessage = true
@@ -34,9 +47,10 @@ function Validator(options) {
 
       options.rules.forEach(function (rule) {
         let inputElement = formElement.querySelector(rule.selector);
-        let errorElement = inputElement.parentElement.querySelector(
-          options.errorSelector,
-        );
+        let errorElement = getParent(
+          inputElement,
+          options.formGroupSelectors,
+        ).querySelector(options.errorSelector);
         let isValid = validate(inputElement, rule, errorElement);
         if (!isValid) {
           isFormValid = false;
@@ -71,9 +85,10 @@ function Validator(options) {
       }
 
       let inputElement = formElement.querySelector(rule.selector);
-      let errorElement = inputElement.parentElement.querySelector(
-        options.errorSelector,
-      );
+      let errorElement = getParent(
+        inputElement,
+        options.formGroupSelectors,
+      ).querySelector(options.errorSelector);
 
       if (inputElement) {
         // Process onblur input
@@ -84,7 +99,9 @@ function Validator(options) {
         // Process when user prompts input
         inputElement.oninput = function () {
           errorElement.innerText = "";
-          inputElement.parentElement.classList.remove("invalid");
+          getParent(inputElement, options.formGroupSelectors).classList.remove(
+            "invalid",
+          );
         };
       }
     });
