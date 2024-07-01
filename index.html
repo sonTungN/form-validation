@@ -69,6 +69,12 @@
         </div>
 
         <div class="form-group">
+          <label class="form-label" for="avatar">Avatar</label>
+          <input class="form-control" id="avatar" name="avatar" type="file" />
+          <span class="form-message"></span>
+        </div>
+
+        <div class="form-group">
           <div>
             <label>
               <input
@@ -121,6 +127,7 @@
           Validator.isRequired("#password"),
           Validator.minLength("#password", 6),
           Validator.isRequired("#password_confirmation"),
+          Validator.isRequired("#avatar"),
           Validator.isRequired('input[name="gender"]'),
           Validator.isConfirmed(
             "#password_confirmation",

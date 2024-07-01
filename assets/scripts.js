@@ -91,7 +91,10 @@ function Validator(options) {
                   updatingValue[currentInput.name] = [];
                 }
                 updatingValue[currentInput.name].push(currentInput.value);
+                break;
 
+              case "file":
+                updatingValue[currentInput.name] = currentInput.files;
                 break;
 
               default:
