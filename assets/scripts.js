@@ -75,16 +75,23 @@ function Validator(options) {
             currentInput,
           ) {
             switch (currentInput.type) {
-              case "checkbox":
               case "radio":
-                // if (currentInput.matches(":checked")) {
-                //   updatingValue[currentInput.name] = currentInput.value;
-                // } else {
-                //   updatingValue[currentInput.name] = "";
-                // }
                 updatingValue[currentInput.name] = formElement.querySelector(
                   'input[name="' + currentInput.name + '"]:checked',
                 ).value;
+                break;
+
+              case "checkbox":
+                if (currentInput.matches(":checked")) {
+                  updatingValue[currentInput.name] = [];
+                  return updatingValue;
+                }
+
+                if (!Array.isArray(updatingValue[currentInput.name])) {
+                  updatingValue[currentInput.name] = [];
+                }
+                updatingValue[currentInput.name].push(currentInput.value);
+
                 break;
 
               default:
