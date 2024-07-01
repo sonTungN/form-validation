@@ -77,11 +77,11 @@
 
     <script src="assets/validator.js"></script>
     <script>
-      Validator("#form-1", {
-        onSubmit: function (data) {
-          console.log(data);
-        },
-      });
+      let form = new Validator("#form-1");
+
+      form.onSubmit = function (data) {
+        console.log(data);
+      };
     </script>
   </body>
 </html>

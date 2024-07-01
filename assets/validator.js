@@ -1,4 +1,5 @@
-function Validator(formSelector, options = {}) {
+function Validator(formSelector) {
+  let _this = this;
   let formRules = {};
 
   // Invalid --> Display error message
@@ -127,7 +128,7 @@ function Validator(formSelector, options = {}) {
     }
 
     if (isFormValid) {
-      if (typeof options.onSubmit === "function") {
+      if (typeof _this.onSubmit === "function") {
         let validPromptInput = formElement.querySelectorAll("[name]");
         let validFormValues = Array.from(validPromptInput).reduce(function (
           updatingValue,
@@ -161,7 +162,7 @@ function Validator(formSelector, options = {}) {
           }
           return updatingValue;
         }, {});
-        options.onSubmit(validFormValues);
+        _this.onSubmit(validFormValues);
       } else {
         formElement.submit();
       }
