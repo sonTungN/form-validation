@@ -1,4 +1,4 @@
-function Validator(formSelector) {
+function Validator(formSelector, options = {}) {
   let formRules = {};
 
   // Invalid --> Display error message
@@ -126,7 +126,44 @@ function Validator(formSelector) {
     }
 
     if (isFormValid) {
-      formElement.submit();
+      if (typeof options.onSubmit === "function") {
+        let validPromptInput = formElement.querySelectorAll("[name]");
+        let validFormValues = Array.from(validPromptInput).reduce(function (
+          updatingValue,
+          currentInput,
+        ) {
+          switch (currentInput.type) {
+            case "radio":
+              updatingValue[currentInput.name] = formElement.querySelector(
+                'input[name="' + currentInput.name + '"]:checked',
+              ).value;
+              break;
+
+            case "checkbox":
+              if (currentInput.matches(":checked")) {
+                updatingValue[currentInput.name] = [];
+                return updatingValue;
+              }
+
+              if (!Array.isArray(updatingValue[currentInput.name])) {
+                updatingValue[currentInput.name] = [];
+              }
+              updatingValue[currentInput.name].push(currentInput.value);
+              break;
+
+            case "file":
+              updatingValue[currentInput.name] = currentInput.files;
+              break;
+
+            default:
+              updatingValue[currentInput.name] = currentInput.value;
+          }
+          return updatingValue;
+        }, {});
+        options.onSubmit(validFormValues);
+      } else {
+        formElement.submit();
+      }
     }
   };
 
