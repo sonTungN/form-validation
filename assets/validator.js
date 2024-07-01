@@ -87,6 +87,7 @@ function Validator(formSelector) {
           }
         }
       }
+      return !errorMessage;
     }
   }
 
@@ -111,6 +112,23 @@ function Validator(formSelector) {
       parent = parent.parentElement;
     }
   }
+
+  formElement.onsubmit = function (event) {
+    event.preventDefault();
+
+    let inputs = formElement.querySelectorAll("[name][rules]");
+    let isFormValid = true;
+
+    for (let input of inputs) {
+      if (!handleValidate({ target: input })) {
+        isFormValid = false;
+      }
+    }
+
+    if (isFormValid) {
+      formElement.submit();
+    }
+  };
 
   // console.log(formRules);
 }
