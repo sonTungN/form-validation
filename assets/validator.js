@@ -60,9 +60,57 @@ function Validator(formSelector) {
       }
 
       // Process Event for validation
+      input.onblur = handleValidate;
+      input.oninput = handleClearError;
     }
 
     // Validating function
+    function handleValidate(event) {
+      let rules = formRules[event.target.name];
+      let errorMessage;
+
+      // Find through rules until get the invalid in rule() and
+      // return the error message
+      rules.find(function (rule) {
+        errorMessage = rule(event.target.value);
+        return errorMessage;
+      });
+
+      if (errorMessage) {
+        let formGroup = getParent(event.target, ".form-group");
+
+        if (formGroup) {
+          let formMessage = formGroup.querySelector(".form-message");
+          if (formMessage) {
+            formMessage.innerText = errorMessage;
+            formGroup.classList.add("invalid");
+          }
+        }
+      }
+    }
   }
+
+  function handleClearError(event) {
+    let formGroup = getParent(event.target, ".form-group");
+    if (formGroup.classList.contains("invalid")) {
+      formGroup.classList.remove("invalid");
+
+      let formMessage = formGroup.querySelector(".form-message");
+      if (formMessage) {
+        formMessage.innerText = "";
+      }
+    }
+  }
+
+  function getParent(element, selector) {
+    let parent = element.parentElement;
+    while (parent) {
+      if (parent.matches(selector)) {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+  }
+
   // console.log(formRules);
 }
