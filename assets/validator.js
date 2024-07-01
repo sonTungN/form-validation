@@ -9,7 +9,7 @@ function Validator(formSelector) {
     },
 
     email: function (value) {
-      let pattern = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
+      let pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
       return pattern.test(value) ? undefined : "Must input an email!";
     },
 
