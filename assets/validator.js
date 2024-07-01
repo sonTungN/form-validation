@@ -71,10 +71,11 @@ function Validator(formSelector, options = {}) {
 
       // Find through rules until get the invalid in rule() and
       // return the error message
-      rules.find(function (rule) {
+
+      for (let rule of rules) {
         errorMessage = rule(event.target.value);
-        return errorMessage;
-      });
+        if (errorMessage) break;
+      }
 
       if (errorMessage) {
         let formGroup = getParent(event.target, ".form-group");
