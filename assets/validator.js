@@ -1,5 +1,5 @@
-function Validator(options) {
-  function getParent(element, selector) {
+function Validator(formOptions) {
+  function getParentBySelector(element, selector) {
     while (element.parentElement) {
       if (element.parentElement.matches(selector)) {
         return element.parentElement;
@@ -32,22 +32,23 @@ function Validator(options) {
 
     if (errorMessage) {
       errorElement.innerText = errorMessage;
-      getParent(inputElement, options.formGroupSelectors).classList.add(
-        "invalid",
-      );
+      getParentBySelector(
+        inputElement,
+        formOptions.formGroupSelectors,
+      ).classList.add("invalid");
     } else {
       errorElement.innerText = "";
-      getParent(inputElement, options.formGroupSelectors).classList.remove(
-        "invalid",
-      );
+      getParentBySelector(
+        inputElement,
+        formOptions.formGroupSelectors,
+      ).classList.remove("invalid");
     }
 
     // Valid --> return undefined --> !errorMessage = true
     return !errorMessage;
   }
 
-  let formElement = document.querySelector(options.form);
-
+  let formElement = document.querySelector(formOptions.form);
   if (formElement) {
     // Validate all input when click submit
     formElement.onsubmit = function (e) {
@@ -55,12 +56,13 @@ function Validator(options) {
 
       let isFormValid = true;
 
-      options.rules.forEach(function (rule) {
+      formOptions.rules.forEach(function (rule) {
         let inputElement = formElement.querySelector(rule.selector);
-        let errorElement = getParent(
+        let errorElement = getParentBySelector(
           inputElement,
-          options.formGroupSelectors,
-        ).querySelector(options.errorSelector);
+          formOptions.formGroupSelectors,
+        ).querySelector(formOptions.errorSelector);
+
         let isValid = validate(inputElement, rule, errorElement);
         if (!isValid) {
           isFormValid = false;
@@ -68,41 +70,41 @@ function Validator(options) {
       });
 
       if (isFormValid) {
-        if (typeof options.onSubmit === "function") {
-          let validPromptInput = formElement.querySelectorAll("[name]");
-          let validFormValues = Array.from(validPromptInput).reduce(function (
-            updatingValue,
-            currentInput,
+        if (typeof formOptions.onSubmit === "function") {
+          let validInputElement = formElement.querySelectorAll("[name]");
+          let validInputValues = Array.from(validInputElement).reduce(function (
+            output,
+            currInput,
           ) {
-            switch (currentInput.type) {
+            switch (currInput.type) {
               case "radio":
-                updatingValue[currentInput.name] = formElement.querySelector(
-                  'input[name="' + currentInput.name + '"]:checked',
+                output[currInput.name] = formElement.querySelector(
+                  'input[name="' + currInput.name + '"]:checked',
                 ).value;
                 break;
 
               case "checkbox":
-                if (currentInput.matches(":checked")) {
-                  updatingValue[currentInput.name] = [];
-                  return updatingValue;
+                if (currInput.matches(":checked")) {
+                  output[currInput.name] = [];
+                  return output;
                 }
 
-                if (!Array.isArray(updatingValue[currentInput.name])) {
-                  updatingValue[currentInput.name] = [];
+                if (!Array.isArray(output[currInput.name])) {
+                  output[currInput.name] = [];
                 }
-                updatingValue[currentInput.name].push(currentInput.value);
+                output[currInput.name].push(currInput.value);
                 break;
 
               case "file":
-                updatingValue[currentInput.name] = currentInput.files;
+                output[currInput.name] = currInput.files;
                 break;
 
               default:
-                updatingValue[currentInput.name] = currentInput.value;
+                output[currInput.name] = currInput.value;
             }
-            return updatingValue;
+            return output;
           }, {});
-          options.onSubmit(validFormValues);
+          formOptions.onSubmit(validInputValues);
         } else {
           formElement.submit();
         }
@@ -110,7 +112,7 @@ function Validator(options) {
     };
 
     // Process all the rules
-    options.rules.forEach(function (rule) {
+    formOptions.rules.forEach(function (rule) {
       if (!Array.isArray(selectorRules[rule.selector])) {
         selectorRules[rule.selector] = [rule.test];
       } else {
@@ -119,10 +121,10 @@ function Validator(options) {
 
       let inputElements = formElement.querySelectorAll(rule.selector);
       Array.from(inputElements).forEach(function (inputElement) {
-        let errorElement = getParent(
+        let errorElement = getParentBySelector(
           inputElement,
-          options.formGroupSelectors,
-        ).querySelector(options.errorSelector);
+          formOptions.formGroupSelectors,
+        ).querySelector(formOptions.errorSelector);
 
         inputElement.onblur = function () {
           validate(inputElement, rule, errorElement);
@@ -131,9 +133,10 @@ function Validator(options) {
         // Process when user prompts input
         inputElement.oninput = function () {
           errorElement.innerText = "";
-          getParent(inputElement, options.formGroupSelectors).classList.remove(
-            "invalid",
-          );
+          getParentBySelector(
+            inputElement,
+            formOptions.formGroupSelectors,
+          ).classList.remove("invalid");
         };
       });
     });
